@@ -1,0 +1,24 @@
+name: Update gallery
+
+# Runs on a timer and whenever you click "Run workflow" in the Actions tab.
+on:
+  schedule:
+    - cron: "*/10 * * * *"     # every 10 minutes
+  workflow_dispatch: {}         # adds a manual "Run workflow" button
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the script
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Rebuild gallery.json from the live Neocities art folder
+        run: node auto-update-gallery.js
+        env:
+          NEOCITIES_API_KEY: ${{ secrets.NEOCITIES_API_KEY }}
